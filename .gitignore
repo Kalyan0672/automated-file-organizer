@@ -1,0 +1,5 @@
+INPUT/
+OUTPUT/
+__pycache__/
+*.pyc
+.vscode/
