@@ -1,4 +1,4 @@
-name: File Organizer CI
+name: File Organizer CI/CD
 
 on:
   push:
@@ -10,8 +10,9 @@ on:
       - main
 
 jobs:
-  test:
 
+  # Continuous Integration
+  test:
     runs-on: windows-latest
 
     steps:
@@ -26,3 +27,31 @@ jobs:
 
       - name: Run tests
         run: python -m unittest discover
+
+
+  # Continuous Delivery
+  package:
+    needs: test
+
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    runs-on: windows-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path package
+          Copy-Item organizer.py package/
+          Copy-Item test_organizer.py package/
+          Compress-Archive -Path package\* -DestinationPath automated-file-organizer.zip
+
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: automated-file-organizer
+          path: automated-file-organizer.zip
