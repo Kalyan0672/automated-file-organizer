@@ -52,7 +52,7 @@ def organize_files():
         # Move the file
         shutil.move(file_path, destination)
 
-        print(f"Moved: {filename} → {category}")
+        print(f"Successfully moved: {filename} → {category}")
 
 
 if __name__ == "__main__":
